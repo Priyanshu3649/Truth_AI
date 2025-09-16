@@ -1,6 +1,6 @@
 'use client';
 
-import { type FormEvent, type RefObject, useState, useRef, useEffect } from 'react';
+import { type RefObject, useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -48,12 +48,6 @@ export function AnalysisForm({ formRef, action, isPending }: AnalysisFormProps) 
       }
     };
   }, [imagePreview]);
-  
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    action(formData);
-  }
 
   useEffect(() => {
     if (!isPending) {
@@ -63,7 +57,7 @@ export function AnalysisForm({ formRef, action, isPending }: AnalysisFormProps) 
 
   return (
     <Card>
-      <form ref={formRef} onSubmit={handleSubmit}>
+      <form ref={formRef} action={action}>
         <CardHeader>
           <CardTitle>Submit Content</CardTitle>
           <CardDescription>Enter text and/or upload an image for analysis.</CardDescription>

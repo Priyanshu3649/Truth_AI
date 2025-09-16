@@ -1,7 +1,7 @@
 'use client';
 
-import { useFormState } from 'react-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useActionState } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import { ClipboardCheck, FileWarning } from 'lucide-react';
 import { analyzeContentAction, type FormState } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -54,14 +54,14 @@ function ErrorState({ message }: { message: string }) {
 
 
 export default function Home() {
-  const [state, formAction] = useFormState(analyzeContentAction, initialState);
-  const [isPending, setIsPending] = useState(false);
+  const [state, formAction, isPending] = useActionState(analyzeContentAction, initialState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
+  const [previousKey, setPreviousKey] = useState(state.key);
 
   useEffect(() => {
-    if (state.key && isPending) {
-        setIsPending(false);
+    if (state.key !== previousKey) {
+        setPreviousKey(state.key);
         if (state.error) {
             toast({
                 variant: 'destructive',
@@ -73,12 +73,7 @@ export default function Home() {
             formRef.current?.reset();
         }
     }
-  }, [state, toast, isPending]);
-
-  const handleAction = (formData: FormData) => {
-    setIsPending(true);
-    formAction(formData);
-  };
+  }, [state, toast, previousKey]);
   
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -104,7 +99,7 @@ export default function Home() {
 
           <div className="grid lg:grid-cols-2 gap-8 items-start">
             <div className="sticky top-24">
-              <AnalysisForm formRef={formRef} action={handleAction} isPending={isPending} />
+              <AnalysisForm formRef={formRef} action={formAction} isPending={isPending} />
             </div>
             <div className="min-h-[400px]">
               {isPending ? (

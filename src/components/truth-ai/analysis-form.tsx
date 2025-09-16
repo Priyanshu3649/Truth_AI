@@ -65,7 +65,7 @@ export function AnalysisForm({ formRef, action, isPending }: AnalysisFormProps) 
     <Card>
       <form ref={formRef} onSubmit={handleSubmit}>
         <CardHeader>
-          <CardTitle>Submit Content</CardTitle>lng
+          <CardTitle>Submit Content</CardTitle>
           <CardDescription>Enter text and/or upload an image for analysis.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
